@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: odatests-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+  - host: odatests.in.odahub.io
+    http:
+      paths:
+      - path: /testpath
+        pathType: Prefix
+        backend:
+          serviceName: odatests
+          servicePort: 8000

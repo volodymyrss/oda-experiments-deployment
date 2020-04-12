@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: odatests
+spec:
+  ports:
+  - port: 8000
+  selector:
+    app: odatests
+  clusterIP: None
+---
+apiVersion: apps/v1 
+kind: Deployment
+metadata:
+  name: odatests
+spec:
+  selector:
+    matchLabels:
+      app: odatests
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: odatests
+    spec:
+      containers:
+      - image: admin.reproducible.online/oda-tests:82e26cb
+        name: odatests
+        env:
+          # Use secret in real usage
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+              secretKeyRef:
+                name: db-user-pass
+                key: password.txt
+        ports:
+        - containerPort: 8000
+          name: odatests
+#        volumeMounts:
+#        - name: mysql-persistent-storage
+#          mountPath: /var/lib/mysql
+#      volumes:
+#      - name: mysql-persistent-storage
+#        persistentVolumeClaim:
+#          claimName: mysql-pv-claim
