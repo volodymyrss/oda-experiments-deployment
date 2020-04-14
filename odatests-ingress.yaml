@@ -14,3 +14,10 @@ spec:
         backend:
           serviceName: odatests
           servicePort: 8000
+  - host: in.odahub.io
+    http:
+      paths:
+      - path: /odatests(/|$)(.*)
+        backend:
+          serviceName: odatests
+          servicePort: 8000

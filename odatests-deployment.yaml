@@ -25,7 +25,7 @@ spec:
         app: odatests
     spec:
       containers:
-      - image: admin.reproducible.online/oda-tests:82e26cb
+      - image: admin.reproducible.online/oda-tests:f0f3b9d
         name: odatests
         env:
           # Use secret in real usage
@@ -37,10 +37,24 @@ spec:
         ports:
         - containerPort: 8000
           name: odatests
-#        volumeMounts:
-#        - name: mysql-persistent-storage
-#          mountPath: /var/lib/mysql
-#      volumes:
-#      - name: mysql-persistent-storage
-#        persistentVolumeClaim:
-#          claimName: mysql-pv-claim
+
+      - image: mysql:5.6
+        name: mysql
+        env:
+          # Use secret in real usage
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+              secretKeyRef:
+                name: db-user-pass
+                key: password.txt
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: mysql-persistent-storage
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: mysql-persistent-storage
+        persistentVolumeClaim:
+          claimName: mysql-pv-claim
+
