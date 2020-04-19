@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: odatests
+spec:
+  ports:
+  - port: 8000
+  selector:
+    app: odatests
+  clusterIP: None
+---
+apiVersion: apps/v1 
+kind: Deployment
+metadata:
+  name: odatests
+spec:
+  selector:
+    matchLabels:
+      app: odatests
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: odatests
+    spec:
+      containers:
+      - image: {{IMAGE}}
+        name: odatests
+        env:
+        - name: ODA_SPARQL_ROOT
+          value: "http://fuseki.internal.odahub.io/dataanalysis"
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+              secretKeyRef:
+                name: db-user-pass
+                key: password.txt
+        - name: MINIO_KEY
+          valueFrom:
+              secretKeyRef:
+                name: minio-key
+                key: minio-key.txt
+        - name: JENA_PASSWORD
+          valueFrom:
+              secretKeyRef:
+                name: jena-password
+                key: jena-password.txt
+        ports:
+        - containerPort: 8000
+          name: odatests
+
+      - image: mysql:5.6
+        name: mysql
+        env:
+          # Use secret in real usage
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+              secretKeyRef:
+                name: db-user-pass
+                key: password.txt
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: mysql-persistent-storage
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: mysql-persistent-storage
+        persistentVolumeClaim:
+          claimName: mysql-pv-claim
+
