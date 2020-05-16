@@ -45,6 +45,11 @@ spec:
               secretKeyRef:
                 name: jena-password
                 key: jena-password.txt
+        - name: LOGSTASH_ENTRYPOINT
+          valueFrom:
+              secretKeyRef:
+                name: logstash-entrypoint
+                key: logstash-entrypoint.txt
         ports:
         - containerPort: 8000
           name: odatests
