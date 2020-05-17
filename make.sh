@@ -21,4 +21,9 @@ function deploy() {
     rm -f odatests-deployment.yaml
 }
 
+function deploy-chart() {
+    set -x
+    helm upgrade oda-tests chart --set image.tag="$(cd odatests; git describe --always)"
+}
+
 $@
