@@ -8,17 +8,8 @@ function create-secrets(){
     kubectl create secret generic logstash-entrypoint  --from-file=./private/logstash-entrypoint.txt
 }
 
-function template() {
-    (cd odatests; make image-name)
-
-    < odatests-deployment-template.yaml sed 's@{{IMAGE}}@'$(cat image-name)'@' > odatests-deployment.yaml
-}
-
-function deploy() {
-    template
-
-    kubectl apply -f odatests-deployment.yaml
-    rm -f odatests-deployment.yaml
+function install() {
+    helm install --name oda-tests chart --set image.tag="$(cd odatests; git describe --always)"
 }
 
 function deploy-chart() {
