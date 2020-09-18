@@ -9,12 +9,12 @@ function create-secrets(){
 }
 
 function install() {
-    helm install oda-tests chart --set image.tag="$(cd odatests; git describe --always)"
+    helm install oda-experiments chart --set image.tag="$(cd odaexperiments; git describe --always)"
 }
 
 function upgrade() {
     set -x
-    helm upgrade oda-tests chart --set image.tag="$(cd odatests; git describe --always)"
+    helm upgrade oda-experiments chart --set image.tag="$(cd odaexperiments; git describe --always)"
 }
 
 $@
