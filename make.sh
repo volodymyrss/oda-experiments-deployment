@@ -5,6 +5,8 @@ function create-secrets(){
     kubectl create secret generic odatests-secret-key  --from-file=./private/secret-key.txt
     kubectl create secret generic minio-key  --from-file=./private/minio-key.txt
     kubectl create secret generic jena-password  --from-file=./private/jena-password.txt
+
+    kubectl delete secret logstash-entrypoint || echo "no secret yet, will create"
     kubectl create secret generic logstash-entrypoint  --from-file=./private/logstash-entrypoint.txt
 }
 
@@ -14,7 +16,7 @@ function install() {
 
 function upgrade() {
     set -x
-    helm upgrade oda-experiments chart --set image.tag="$(cd odaexperiments; git describe --always)"
+    helm upgrade --install oda-experiments  chart --set image.tag="$(cd odaexperiments; git describe --always)"
 }
 
 $@

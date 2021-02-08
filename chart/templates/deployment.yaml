@@ -59,6 +59,11 @@ spec:
                 secretKeyRef:
                   name: db-user-pass
                   key: password.txt
+          - name: MINIO_USER
+            value: savchenk
+          - name: MINIO_URL
+            #value: minio-internal.odahub.io
+            value: minio3.internal.odahub.io
           - name: MINIO_KEY
             valueFrom:
                 secretKeyRef:
