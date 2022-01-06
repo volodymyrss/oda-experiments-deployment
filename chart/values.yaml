@@ -2,8 +2,11 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 3
-replicaCountWorker: 1
+sparql: https://fuseki.obsuks1.unige.ch/dataanalysis
+
+replicaCount:
+  interface: 1
+  worker: 1
 
 image:
   repository: odahub/oda-experiments
@@ -40,19 +43,16 @@ service:
 ingress:
   enabled: true
   annotations: 
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
-    kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    #kubernetes.io/tls-acme: "true"
   hosts:
   - host: oda-experiments.iu.odahub.io
     paths:
     - /
-  - host: in.internal.odahub.io
+  - host: oda-experiments.obsuks1.unige.ch
     paths:
-    - /odatests(/|$)(.*)
-  - host: in.odahub.io
-    paths:
-    - /odatests(/|$)(.*)
+    - /
 
   tls: []
   #  - secretName: chart-example-tls
@@ -61,14 +61,23 @@ ingress:
 
 resources: 
    limits:
-     cpu: 500m
-     memory: 1024Mi
+     cpu: 4000m
+     memory: 2048Mi
    requests:
-     cpu: 500m
-     memory: 1024Mi
+     cpu: 2000m
+     memory: 2048Mi
 
 nodeSelector: {}
 
 tolerations: []
 
 affinity: {}
+
+
+minio:
+  host: minio.obsuks1.unige.ch
+  secure: yes
+  user: oda-experiments
+  secretKeyRef:
+    name: minio-key-oda-experiments
+    key: minio-key.txt
